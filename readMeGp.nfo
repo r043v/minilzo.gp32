@@ -1,0 +1,51 @@
+/*****************************
+            mini lzo lib for the Gp32
+
+*****
+
+mini lzo, is a lite version of the lzo lib, it able you to compress and uncompress memory
+
+it's a gpl lib, so if you use it, your program must be under the gpl license
+
+this lib is very good write and and very portable (Markus seen to love code with #define :))
+
+the compression ratio is not powerfull but the lib is very small (the author said about 6ko compiled),
+not requiere memory to uncompress, requiere 16ko to compress
+is sdk friendly : only use memcpy and memset, so can be very easy to use it with mrMiko sdk (yet, not try it)
+
+i try the lib onto ads, but there is no raison it doesn't work with sdt or gcc.
+
+you need to have memset and memcpy defined to use mini lzo lib
+
+for the gamepark sdk, just add these 2 line before inclusing minilzo.c :
+
+#define	memcpy		(gp_str_func.memcpy)
+#define	memset		(gp_str_func.memset)
+
+it's a fast port, so, the lib is not cleaned, it stay MANY define to delete, due to the many os support
+but for your program, a cleaned lib or not is the same.
+
+lib routines :
+
+lzo1x_1_compress(in,in_len,out,&out_len,wrkmem);
+
+	unsigned char *in	;	// pointer to data to compress
+	unsigned int in_len	;	// size in byte of data to compress
+	unsigned char *out	;	// pointer who define where the lib will put compressed data, mini lzo lib NOT alloc it, just write inside
+	unsigned int out_len ;	// the lib will write in this var the size of the compressed data
+	wrkmem			// the buffer used for compress, 16ko, i add declaration for this var in the c file of the lib, so just put 'wrkmem' as arg 5
+	
+	note, you need to alloc out buffer, the lib author, alloc it with  (in_len + (in_len>>6) + 16 + 3) ; (yes, more hight than the input buffer ^^)
+
+lzo1x_decompress(out,out_len,in,&new_len,NULL);
+
+	unsigned char *out	 ;	// pointer to compressed data
+	unsigned int out_len;	// compressed size, in bytes
+	unsigned char *in	;	// pointer to mem zone, where the lib will write uncompressed buffer (yes, same as out in the compress, you need to alloc it)
+	unsigned int new_len ;	// the lib write uncompressed buffer size in this var
+
+
+see original lib readme to get other info and routines..
+
+
+  -rov
